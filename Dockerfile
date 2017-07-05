@@ -1,32 +1,38 @@
-FROM nimmis/alpine-micro
+FROM nimmis/alpine-micro:3.6
 
 MAINTAINER nimmis <kjell.havneskold@gmail.com>
 
 COPY root/. /
 
+ENV PHP_VERSION php7
+ENV PLUXML_URL http://telechargements.pluxml.org/download.php
+ENV DOCUMENT_ROOT /web/PluXml
+
+ENV TIMEZONE Europe/Paris
+
 RUN apk update && apk upgrade && \
 
+	# cp /etc/localtime /etc/timezone /usr/local/etc && \
+
     # Make info file about this build
-    printf "Build of nimmis/alpine-apache, date: %s\n"  `date -u +"%Y-%m-%dT%H:%M:%SZ"` >> /etc/BUILD && \
+    printf "Build of bazooka07/docker-apache-pluxml, date: %s\n" "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> /etc/BUILD && \
 
-    apk add apache2 libxml2-dev apache2-utils && \
-    mkdir /web/ && chown -R apache.www-data /web && \
-   
-    sed -i 's#^DocumentRoot ".*#DocumentRoot "/web/html"#g' /etc/apache2/httpd.conf && \
-    sed -i 's#AllowOverride none#AllowOverride All#' /etc/apache2/httpd.conf && \
-    sed -i 's#^ServerRoot .*#ServerRoot /web#g'  /etc/apache2/httpd.conf && \
-    sed -i 's/^#ServerName.*/ServerName webproxy/' /etc/apache2/httpd.conf && \
-    sed -i 's#^IncludeOptional /etc/apache2/conf#IncludeOptional /web/config/conf#g' /etc/apache2/httpd.conf && \
+#   apk add apache2 apache2-utils \
+	apk add unzip ${PHP_VERSION}-apache2 ${PHP_VERSION}-session \
+	    ${PHP_VERSION}-gd ${PHP_VERSION}-xml ${PHP_VERSION}-zip apache2-utils \
+	    ${PHP_VERSION}-curl ${PHP_VERSION}-xdebug && \
+#    mkdir /web/ && chown -R apache.www-data /web && \
+
     sed -i 's#PidFile "/run/.*#Pidfile "/web/run/httpd.pid"#g'  /etc/apache2/conf.d/mpm.conf && \
-    sed -i 's#Directory "/var/www/localhost/htdocs.*#Directory "/web/html" >#g' /etc/apache2/httpd.conf && \
-    sed -i 's#Directory "/var/www/localhost/cgi-bin.*#Directory "/web/cgi-bin" >#g' /etc/apache2/httpd.conf && \
+    sed -i 's|/var/log/apache2/|/web/logs/|g' /etc/logrotate.d/apache2
 
-    sed -i 's#/var/log/apache2/#/web/logs/#g' /etc/logrotate.d/apache2 && \
-    sed -i 's/Options Indexes/Options /g' /etc/apache2/httpd.conf && \
+RUN	sh /etc/apache2/tmp/conf.sh && \
+	sed -i '/zend_extension/s/^;//' /etc/${PHP_VERSION}/conf.d/xdebug.ini && \
+	cat /etc/apache2/tmp/xdebug.conf >> /etc/${PHP_VERSION}/conf.d/xdebug.ini
 
-    rm -rf /var/cache/apk/*
+RUN rm -rf /etc/apache2/tmp && \
+	rm -rf /var/cache/apk/*
 
 VOLUME /web
 
 EXPOSE 80 443
-

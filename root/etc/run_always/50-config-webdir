@@ -3,8 +3,8 @@
 # popolate /web if empty
 
 if [ ! -d /web/config ]; then
-  mkdir /web/config
-  chown -R apache.www-data /web/config
+  mkdir -p /web/config
+  chown -R apache.www-data /web
 fi
 
 if [ ! -d /web/logs ]; then
@@ -28,10 +28,10 @@ if [ ! -d /web/run ]; then
   mkdir /web/run/apache2
 fi
 
-if [ ! -d /web/cgi-bin ]; then
-  mkdir /web/cgi-bin
-  chown -R apache.www-data /web/cgi-bin
-fi
+# if [ ! -d /web/cgi-bin ]; then
+#  mkdir /web/cgi-bin
+#  chown -R apache.www-data /web/cgi-bin
+# fi
 
 if [ ! -d /web/internal ]; then
   mkdir /web/internal
