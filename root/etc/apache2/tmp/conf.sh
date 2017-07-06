@@ -2,7 +2,7 @@
 
 sed -i -e "\
 s|^DocumentRoot\s.*|DocumentRoot \"${DOCUMENT_ROOT}\"|g; \
-s|AllowOverride none|AllowOverride All|; \
+s|AllowOverride None.*|AllowOverride All|; \
 s|^ServerRoot .*|ServerRoot /web|g; \
 s|^#ServerName.*|ServerName webproxy|; \
 s|^IncludeOptional /etc/apache2/conf|IncludeOptional /web/config/conf|g; \
