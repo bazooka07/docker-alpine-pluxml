@@ -4,6 +4,8 @@ ARG	ALPINE_VERSION=latest
 
 FROM	nimmis/alpine-micro:${ALPINE_VERSION}
 
+ARG	ALPINE_VERSION
+
 LABEL	description="Intégration de PluXml dans Docker" \
 		maintainer="J.P. Pourrez <kazimentou@gmail.com>" \
 		version="2017-07-09"
@@ -26,9 +28,7 @@ RUN apk update && apk upgrade && \
 	    ${PHP_VERSION}-gd ${PHP_VERSION}-xml ${PHP_VERSION}-zip apache2-utils \
 	    ${PHP_VERSION}-curl
 
-RUN	[ ${PHP_VERSION} != 'php7' ] || apk add ${PHP_VERSION}-session
-
-RUN	apk add ${PHP_VERSION}-xdebug
+RUN	[ "${PHP_VERSION}" != 'php7' ] || apk add ${PHP_VERSION}-session
 
 RUN	sed -i 's#PidFile "/run/.*#Pidfile "/web/run/httpd.pid"#g'  /etc/apache2/conf.d/mpm.conf && \
     sed -i 's|/var/log/apache2/|/web/logs/|g' /etc/logrotate.d/apache2
@@ -36,8 +36,15 @@ RUN	sed -i 's#PidFile "/run/.*#Pidfile "/web/run/httpd.pid"#g'  /etc/apache2/con
 RUN	sh /etc/apache2/tmp/conf.sh
 
 # php-xdebug
-RUN	sed -i '/zend_extension/s/^;//' /etc/${PHP_VERSION}/conf.d/xdebug.ini && \
-	cat /etc/apache2/tmp/xdebug.conf >> /etc/${PHP_VERSION}/conf.d/xdebug.ini
+RUN echo -e "\e[33mAlpine version: ${ALPINE_VERSION}\e[0m" && \
+	echo -e "\e[33mPHP version: ${PHP_VERSION}\e[0m" && \
+	if [ "${ALPINE_VERSION}" != '3.6' ] || [ "${PHP_VERSION}" = 'php7' ]; then \
+		apk add ${PHP_VERSION}-xdebug && \
+		sed -i '/zend_extension/s/^;//' /etc/${PHP_VERSION}/conf.d/xdebug.ini && \
+		cat /etc/apache2/tmp/xdebug.conf >> /etc/${PHP_VERSION}/conf.d/xdebug.ini; \
+	fi
+
+# RUN sh /etc/apache2/tmp/set_xdebug.sh
 
 RUN rm -rf /etc/apache2/tmp && \
 	rm -rf /var/cache/apk/*
