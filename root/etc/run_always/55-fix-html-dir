@@ -12,7 +12,8 @@ if [ ! -d /web/PluXml ]; then
 	ln -s ../config/internal/phpinfo.php ${DOCUMENT_ROOT}
 
 	echo "Téléchargement de(s) plugin(s)"
-	plugins="kzUploader moveMyDatas DnD_move tinyMCE"
+	# plugins="kzUploader moveMyDatas DnD_move tinyMCE"
+	plugins="kzUploader"
 	for plugin in ${plugins}; do
 		echo -e "\e[33m${plugin}\e[0m"
 		wget -nv -O ${tmpfile} "http://kazimentou.fr/pluxml-plugins2/index.php?plugin=${plugin}&download"
