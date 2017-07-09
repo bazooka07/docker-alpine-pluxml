@@ -1,31 +1,29 @@
 #!/bin/sh
 
-# copy index.html if html directory does not exists
-
-#if [ ! -d /web/html ]; then
-  # mkdir /web/html
-  # cp -RpP /etc/apache2/html/* /web/html/
-  # chown -R apache.www-data /web/html
 if [ ! -d /web/PluXml ]; then
-  echo "Téléchargement de PluXml"
-  tmpfile="/tmp/pluxml.zip"
-  wget -O ${tmpfile} ${PLUXML_URL}
-  unzip -qd /web/ ${tmpfile}
-  rm ${tmpfile}
-  chown -R apache.www-data ${DOCUMENT_ROOT}
-  PHP_INFO="/etc/apache2/html/phpinfo.php"
-  # chown -R apache.www-data ${PHP_INFO}
-  ln -s ../config/internal/phpinfo.php ${DOCUMENT_ROOT}
+	echo "Téléchargement de PluXml"
+	tmpfile="/tmp/pluxml.zip"
+	wget -nv -O ${tmpfile} ${PLUXML_URL}
+	unzip -qd /web/ ${tmpfile}
+	rm ${tmpfile}
+	chown -R apache.www-data ${DOCUMENT_ROOT}
+	PHP_INFO="/etc/apache2/html/phpinfo.php"
+	# chown -R apache.www-data ${PHP_INFO}
+	ln -s ../config/internal/phpinfo.php ${DOCUMENT_ROOT}
 
-  echo "Téléchargement du plugin kzUploader"
-  wget -O ${tmpfile} "http://kazimentou.fr/pluxml-plugins2/index.php?plugin=kzUploader&download"
-  unzip -qd ${DOCUMENT_ROOT}/plugins/ ${tmpfile}
-  rm ${tmpfile}
+	echo "Téléchargement de(s) plugin(s)"
+	plugins="kzUploader moveMyDatas DnD_move tinyMCE"
+	for plugin in ${plugins}; do
+		echo -e "\e[33m${plugin}\e[0m"
+		wget -nv -O ${tmpfile} "http://kazimentou.fr/pluxml-plugins2/index.php?plugin=${plugin}&download"
+		unzip -qd ${DOCUMENT_ROOT}/plugins/ ${tmpfile}
+	done
+	rm ${tmpfile}
 fi
 
 SEP="====================================================="
 echo ${SEP}
 echo -e " \e[33mConnectez votre navigateur à l'adresse: $(tail -n 1 /etc/hosts | sed 's/\s.*$//')\e[0m"
 echo " Date/heure: $(date)"
-echo " $(${PHP_VERSION} --version)"
+# echo " $(${PHP_VERSION} --version)"
 echo ${SEP}

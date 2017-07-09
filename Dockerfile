@@ -4,6 +4,7 @@ ARG	ALPINE_VERSION=latest
 
 FROM	nimmis/alpine-micro:${ALPINE_VERSION}
 
+# Important pour utiliser ${ALPINE_VERSION}
 ARG	ALPINE_VERSION
 
 LABEL	description="Intégration de PluXml dans Docker" \
@@ -13,17 +14,15 @@ LABEL	description="Intégration de PluXml dans Docker" \
 COPY root/. /
 
 ARG PHP_VERSION=php7
-# ENV	PHP_VERSION php7
+
 ENV PLUXML_URL http://telechargements.pluxml.org/download.php
 ENV DOCUMENT_ROOT /web/PluXml
 
 ENV TIMEZONE Europe/Paris
 
-	# Make info file about this build
-RUN	printf "Build of bazooka07/docker-apache-pluxml, date: %s\n" "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> /etc/BUILD
-
-RUN apk update && apk upgrade && \
-
+RUN	printf "Build of bazooka07/docker-apache-pluxml, date: %s\n" "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> /etc/BUILDS/alpine-micro && \
+	echo "PHP version ${PHP_VERSION}" >> /etc/BUILDS/alpine-micro && \
+	apk update && apk upgrade && \
 	apk add unzip ${PHP_VERSION}-apache2 \
 	    ${PHP_VERSION}-gd ${PHP_VERSION}-xml ${PHP_VERSION}-zip apache2-utils \
 	    ${PHP_VERSION}-curl
@@ -39,9 +38,12 @@ RUN	sh /etc/apache2/tmp/conf.sh
 RUN echo -e "\e[33mAlpine version: ${ALPINE_VERSION}\e[0m" && \
 	echo -e "\e[33mPHP version: ${PHP_VERSION}\e[0m" && \
 	if [ "${ALPINE_VERSION}" != '3.6' ] || [ "${PHP_VERSION}" = 'php7' ]; then \
+		echo -e "\e[32mInstallation de Xdebug\e[0m"; \
 		apk add ${PHP_VERSION}-xdebug && \
 		sed -i '/zend_extension/s/^;//' /etc/${PHP_VERSION}/conf.d/xdebug.ini && \
 		cat /etc/apache2/tmp/xdebug.conf >> /etc/${PHP_VERSION}/conf.d/xdebug.ini; \
+	else \
+		echo -e "\e[31mPas de Xdebug pour ces versions\e[0m"; \
 	fi
 
 # RUN sh /etc/apache2/tmp/set_xdebug.sh
