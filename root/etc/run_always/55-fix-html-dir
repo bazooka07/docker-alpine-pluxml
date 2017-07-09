@@ -1,9 +1,9 @@
 #!/bin/sh
 
 if [ ! -d /web/PluXml ]; then
-	echo "Téléchargement de PluXml"
+	echo "Téléchargement de la dernière version de PluXml"
 	tmpfile="/tmp/pluxml.zip"
-	wget -nv -O ${tmpfile} ${PLUXML_URL}
+	wget -qO ${tmpfile} ${PLUXML_URL}
 	unzip -qd /web/ ${tmpfile}
 	rm ${tmpfile}
 	chown -R apache.www-data ${DOCUMENT_ROOT}
@@ -11,12 +11,12 @@ if [ ! -d /web/PluXml ]; then
 	# chown -R apache.www-data ${PHP_INFO}
 	ln -s ../config/internal/phpinfo.php ${DOCUMENT_ROOT}
 
-	echo "Téléchargement de(s) plugin(s)"
+	echo "Téléchargement de(s) plugin(s) :"
 	# plugins="kzUploader moveMyDatas DnD_move tinyMCE"
 	plugins="kzUploader"
 	for plugin in ${plugins}; do
 		echo -e "\e[33m${plugin}\e[0m"
-		wget -nv -O ${tmpfile} "http://kazimentou.fr/pluxml-plugins2/index.php?plugin=${plugin}&download"
+		wget -qO ${tmpfile} "http://kazimentou.fr/pluxml-plugins2/index.php?plugin=${plugin}&download"
 		unzip -qd ${DOCUMENT_ROOT}/plugins/ ${tmpfile}
 	done
 	rm ${tmpfile}
