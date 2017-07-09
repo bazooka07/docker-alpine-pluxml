@@ -12,9 +12,10 @@ if [ ! -d /web/PluXml ]; then
   wget -O ${tmpfile} ${PLUXML_URL}
   unzip -qd /web/ ${tmpfile}
   rm ${tmpfile}
+  chown -R apache.www-data ${DOCUMENT_ROOT}
   PHP_INFO="/etc/apache2/html/phpinfo.php"
-  chown -R apache.www-data ${PHP_INFO}
-  ln -s ${PHP_INFO} ${DOCUMENT_ROOT}/phpinfo.php
+  # chown -R apache.www-data ${PHP_INFO}
+  ln -s ../config/internal/phpinfo.php ${DOCUMENT_ROOT}
 
   echo "Téléchargement du plugin kzUploader"
   wget -O ${tmpfile} "http://kazimentou.fr/pluxml-plugins2/index.php?plugin=kzUploader&download"
@@ -24,6 +25,7 @@ fi
 
 SEP="====================================================="
 echo ${SEP}
-echo " Connectez votre navigateur à l'adresse: $(tail -n 1 /etc/hosts | sed 's/\s.*$//')"
+echo -e " \e[33mConnectez votre navigateur à l'adresse: $(tail -n 1 /etc/hosts | sed 's/\s.*$//')\e[0m"
 echo " Date/heure: $(date)"
+echo " $(${PHP_VERSION} --version)"
 echo ${SEP}

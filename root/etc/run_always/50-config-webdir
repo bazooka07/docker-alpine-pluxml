@@ -24,17 +24,5 @@ if [ ! -d /web/modules ]; then
 fi
 
 if [ ! -d /web/run/apache2 ]; then
-#	mkdir /web/run
 	mkdir -p /web/run/apache2
 fi
-
-# if [ ! -d /web/cgi-bin ]; then
-#	mkdir /web/cgi-bin
-#	chown -R apache.www-data /web/cgi-bin
-# fi
-
-# if [ ! -d /web/internal ]; then
-#	mkdir /web/internal
-#	cp -RpP /etc/apache2/internal/* /web/internal/
-#	chown -R apache.www-data /web/internal
-# fi
