@@ -24,11 +24,13 @@ RUN apk update && apk upgrade && \
 
 	apk add unzip ${PHP_VERSION}-apache2 \
 	    ${PHP_VERSION}-gd ${PHP_VERSION}-xml ${PHP_VERSION}-zip apache2-utils \
-	    ${PHP_VERSION}-curl && \
-		[ ${PHP_VERSION} != 'php7' ] || apk add ${PHP_VERSION}-session && \
-		${PHP_VERSION}-xdebug && \
+	    ${PHP_VERSION}-curl
 
-    sed -i 's#PidFile "/run/.*#Pidfile "/web/run/httpd.pid"#g'  /etc/apache2/conf.d/mpm.conf && \
+RUN	[ ${PHP_VERSION} != 'php7' ] || apk add ${PHP_VERSION}-session
+
+RUN	apk add ${PHP_VERSION}-xdebug
+
+RUN	sed -i 's#PidFile "/run/.*#Pidfile "/web/run/httpd.pid"#g'  /etc/apache2/conf.d/mpm.conf && \
     sed -i 's|/var/log/apache2/|/web/logs/|g' /etc/logrotate.d/apache2
 
 RUN	sh /etc/apache2/tmp/conf.sh
