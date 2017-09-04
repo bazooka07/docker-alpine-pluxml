@@ -23,6 +23,9 @@ if [ ! -d /web/modules ]; then
 	ln -s /usr/lib/apache2 /web/modules
 fi
 
-if [ ! -d /web/run/apache2 ]; then
-	mkdir -p /web/run/apache2
+if [ ! -d /web/run ]; then
+	mkdir -p /web/run
+	chown -R apache.www-data /web/config
 fi
+
+rm -f /web/run/httpd.pid

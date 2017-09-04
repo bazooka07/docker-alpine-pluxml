@@ -1,15 +1,13 @@
 #!/bin/sh
 
 if [ ! -d /web/PluXml ]; then
-	echo "Téléchargement de la dernière version de PluXml"
+	echo -e "\nTéléchargement de la dernière version de PluXml"
 	tmpfile="/tmp/pluxml.zip"
 	wget -qO ${tmpfile} ${PLUXML_URL}
 	unzip -qd /web/ ${tmpfile}
 	rm ${tmpfile}
-	chown -R apache.www-data ${DOCUMENT_ROOT}
-	PHP_INFO="/etc/apache2/html/phpinfo.php"
-	# chown -R apache.www-data ${PHP_INFO}
-	ln -s ../config/internal/phpinfo.php ${DOCUMENT_ROOT}
+
+	echo '<?php phpinfo(); ?>' > ${DOCUMENT_ROOT}/phpinfo.php
 
 	echo "Téléchargement de(s) plugin(s) :"
 	# plugins="kzUploader moveMyDatas DnD_move tinyMCE"
@@ -20,11 +18,17 @@ if [ ! -d /web/PluXml ]; then
 		unzip -qd ${DOCUMENT_ROOT}/plugins/ ${tmpfile}
 	done
 	rm ${tmpfile}
+
+	chown -R apache.www-data ${DOCUMENT_ROOT}
 fi
 
 SEP="====================================================="
-echo ${SEP}
-echo -e " \e[33mConnectez votre navigateur à l'adresse: $(tail -n 1 /etc/hosts | sed 's/\s.*$//')\e[0m"
-echo " Date/heure: $(date)"
-# echo " $(${PHP_VERSION} --version)"
+IP_ADDR=$(tail -n 1 /etc/hosts | sed 's/\s.*$//')
+echo -e "${SEP}"
+echo -e "\e[33mConnectez votre navigateur à une des adresses suivantes :"
+echo -e "  - http://${IP_ADDR}"
+echo -e "  - http://${IP_ADDR}/phpinfo.php\e[0m\n"
+echo -e "Date/heure: $(date)\n"
+$(ls /usr/bin/php* | head -1) --version
+echo -e "\nMontez le volume de données sur le dossier \e[33m/web\e[0m"
 echo ${SEP}

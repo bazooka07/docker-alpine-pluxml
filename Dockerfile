@@ -1,5 +1,12 @@
 # For ALPINE_VERSION you can choose between latest and 3.6
 # Take care that php5-xdebug isn't present in latest
+
+# For buiding this image :
+# docker build -t XXXX:YYYY .
+
+# For running :
+# docker run -v /full-path-for-local-folder-on-disk:/web XXXX:YYYY
+
 ARG	ALPINE_VERSION=latest
 
 FROM	nimmis/alpine-micro:${ALPINE_VERSION}
@@ -23,8 +30,8 @@ ENV TIMEZONE Europe/Paris
 RUN	printf "Build of bazooka07/docker-apache-pluxml, date: %s\n" "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> /etc/BUILDS/alpine-micro && \
 	echo "PHP version ${PHP_VERSION}" >> /etc/BUILDS/alpine-micro && \
 	apk update && apk upgrade && \
-	apk add unzip ${PHP_VERSION}-apache2 \
-	    ${PHP_VERSION}-gd ${PHP_VERSION}-xml ${PHP_VERSION}-zip apache2-utils \
+	apk add tzdata unzip ${PHP_VERSION}-apache2 \
+	    ${PHP_VERSION}-gd ${PHP_VERSION}-xml ${PHP_VERSION}-json ${PHP_VERSION}-zip apache2-utils \
 	    ${PHP_VERSION}-curl
 
 RUN	[ "${PHP_VERSION}" != 'php7' ] || apk add ${PHP_VERSION}-session
