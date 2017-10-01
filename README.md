@@ -16,7 +16,7 @@ Afin de profiter des dernières versions de PluXml et kzUploader, ceux-ci ne son
 
 Les données entre les lancements successifs de l'image peuvent être conservés dans un dossier local. Il suffit de le monter sur le volume __/web__, en utilisant l'option -v, comme ceci.
 
-`docker -v /chemin-complet-du/dossier/mon-site:/web alpine-pluxml`
+`docker run -v /chemin-complet-du/dossier/mon-site:/web alpine-pluxml`
 
 PluXml sera entièrement stocké dans ce dossier avec les logs du serveur Apache.
 
@@ -38,7 +38,7 @@ Par défaut, la version 7 de PHP sera utilisé. Si on souhaite utiliser la versi
 
 Pour accèder à la ligne de commande sous Alpine Linux en utilisant l'image pour Docker, lancer l'image comme ceci :
 
-`docker -itv /chemin-complet-du/dossier/mon-site:/web alpine-pluxml /bin/sh`
+`docker run -itv /chemin-complet-du/dossier/mon-site:/web alpine-pluxml /bin/sh`
 
 Noter les points suivants :
 
