@@ -24,7 +24,7 @@ echo "\nExecute the following command for interaction with the image :\n\e[36m$O
 
 echo "\e[33m --------- Image Docker : $IMAGE ---------\e[m"
 docker image ls $IMAGE --format 'table{{.CreatedSince}}\t{{.Size}}\t{{.ID}}'
-
+echo
 
 [ -d $TARGET ] || mkdir $TARGET
 docker run --rm -iv $(pwd)/$TARGET:/web $IMAGE

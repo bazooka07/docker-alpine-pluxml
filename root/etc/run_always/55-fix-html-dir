@@ -34,7 +34,6 @@ echo -e "  - http://${IP_ADDR}"
 echo -e "  - http://${IP_ADDR}/phpinfo.php\e[0m\n"
 echo -e "Date/heure: $(date)\n"
 php --version
-echo "\n"
-cat /etc/issue
-echo -e "\nMontez le volume de données sur le dossier \e[33m/web\e[0m"
+echo; cat /etc/issue | sed 's/kernel.*$//gi'
+echo -e "Montez le volume de données sur le dossier \e[33m/web\e[0m"
 echo ${SEP}

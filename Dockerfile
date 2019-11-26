@@ -30,7 +30,7 @@ ENV DOCUMENT_ROOT /web/PluXml
 
 ENV TIMEZONE Europe/Paris
 
-RUN	printf "Build of bazooka07/docker-apache-pluxml, date: %s\n" "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> /etc/BUILDS/alpine-micro && \
+RUN	date -u +"Build of https://github.com/bazooka07/docker-alpine-pluxml on %Y-%m-%dT%H:%M:%S %Z" >> /etc/BUILDS/alpine-micro && \
 	echo "PHP version ${PHP_VERSION}" && \
 	apk update && apk upgrade && \
 	apk add tzdata unzip ${PHP_VERSION}-apache2 \
