@@ -1,11 +1,15 @@
 #!/bin/sh
 
 if [ ! -d /web/PluXml ]; then
-	echo -e "\nTéléchargement de la dernière version de PluXml"
+	echo -e "\nTéléchargement de la dernière version de PluXml (${PLUXML_URL})"
 	tmpfile="/tmp/pluxml.zip"
 	wget -qO ${tmpfile} ${PLUXML_URL}
-	unzip -qd /web/ ${tmpfile}
-	rm ${tmpfile}
+	if [ -f ${tmpfile} ]; then
+		unzip -qd /web/ ${tmpfile}
+		rm ${tmpfile}
+	else
+		mkdir ${DOCUMENT_ROOT}/plugins
+	fi
 
 	echo '<?php phpinfo(); ?>' > ${DOCUMENT_ROOT}/phpinfo.php
 
@@ -14,7 +18,7 @@ if [ ! -d /web/PluXml ]; then
 	plugins="kzUploader"
 	for plugin in ${plugins}; do
 		echo -e "\e[33m${plugin}\e[0m"
-		wget -qO ${tmpfile} "http://kazimentou.fr/pluxml-plugins2/index.php?plugin=${plugin}&download"
+		wget -qO ${tmpfile} "${PLUGINS_REPO}?plugin=${plugin}&download"
 		unzip -qd ${DOCUMENT_ROOT}/plugins/ ${tmpfile}
 	done
 	rm ${tmpfile}
@@ -29,6 +33,6 @@ echo -e "\e[33mConnectez votre navigateur à une des adresses suivantes :"
 echo -e "  - http://${IP_ADDR}"
 echo -e "  - http://${IP_ADDR}/phpinfo.php\e[0m\n"
 echo -e "Date/heure: $(date)\n"
-$(ls /usr/bin/php* | head -1) --version
+php --version
 echo -e "\nMontez le volume de données sur le dossier \e[33m/web\e[0m"
 echo ${SEP}

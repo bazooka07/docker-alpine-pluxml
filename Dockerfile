@@ -6,6 +6,8 @@
 
 # For running :
 # docker run -v /full-path-for-local-folder-on-disk:/web XXXX:YYYY
+# or with an active terminal
+# docker run -t -v /full-path-for-local-folder-on-disk:/web XXXX:YYYY /bin/sh
 
 ARG	ALPINE_VERSION=latest
 
@@ -16,23 +18,24 @@ ARG	ALPINE_VERSION
 
 LABEL	description="Intégration de PluXml dans Docker" \
 		maintainer="J.P. Pourrez <kazimentou@gmail.com>" \
-		version="2017-07-09"
+		version="2019-10-20"
 
 COPY root/. /
 
 ARG PHP_VERSION=php7
 
-ENV PLUXML_URL http://telechargements.pluxml.org/download.php
+ENV PLUXML_URL https://www.pluxml.org/download/pluxml-latest.zip
+ENV PLUGINS_REPO https://kazimentou.fr/pluxml-plugins2/index.php
 ENV DOCUMENT_ROOT /web/PluXml
 
 ENV TIMEZONE Europe/Paris
 
 RUN	printf "Build of bazooka07/docker-apache-pluxml, date: %s\n" "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> /etc/BUILDS/alpine-micro && \
-	echo "PHP version ${PHP_VERSION}" >> /etc/BUILDS/alpine-micro && \
+	echo "PHP version ${PHP_VERSION}" && \
 	apk update && apk upgrade && \
 	apk add tzdata unzip ${PHP_VERSION}-apache2 \
 	    ${PHP_VERSION}-gd ${PHP_VERSION}-xml ${PHP_VERSION}-json ${PHP_VERSION}-zip apache2-utils \
-	    ${PHP_VERSION}-curl
+	    ${PHP_VERSION}-curl ${PHP_VERSION}
 
 RUN	[ "${PHP_VERSION}" != 'php7' ] || apk add ${PHP_VERSION}-session
 
